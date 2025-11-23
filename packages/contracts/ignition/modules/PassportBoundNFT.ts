@@ -16,10 +16,13 @@ export default buildModule('PassportBoundNFTModule', (m) => {
         ofacEnabled: false,
     })
 
+    const issuingState = m.getParameter('issuingState', 'PSE')
+
     const passportBoundNft = m.contract('PassportBoundNFT', [
         identityVerificationHubV2Address,
         scopeSeed,
         verificationConfig,
+        issuingState,
     ])
 
     return { passportBoundNft }
