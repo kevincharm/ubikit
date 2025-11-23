@@ -5,6 +5,8 @@ import './App.css'
 import { usePassportBoundNft } from './hooks/usePassportBoundNft'
 import { useSelf } from './hooks/useSelf'
 import { Drops } from './components/Drops'
+import { useEffect } from 'react'
+import { sdk } from '@farcaster/miniapp-sdk'
 
 function App() {
     const { isConnected } = useAccount()
@@ -43,6 +45,10 @@ function App() {
             )
         }
     }
+
+    useEffect(() => {
+        sdk.actions.ready()
+    })
 
     return (
         <section className="panel">
