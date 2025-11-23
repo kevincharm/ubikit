@@ -1,5 +1,5 @@
-export const PASSPORT_BOUND_NFT_ADDRESS = '0x9309bd93a8b662d315Ce0D43bb95984694F120Cb'.toLowerCase()
-export const UBIDROP_ADDRESS = '0xb3a2EAB23AdC21eA78e1851Dd4b1316cb2275D9E'
+export const PASSPORT_BOUND_NFT_ADDRESS = '0xFBF562a98aB8584178efDcFd09755FF9A1e7E3a2'.toLowerCase()
+export const UBIDROP_ADDRESS = '0x347Aa06Fd1a911078D858d87c4D1AE59Be818538'
 
 // Token addresses and decimals for Celo Sepolia
 export const TOKEN_INFO = {

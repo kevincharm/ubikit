@@ -14,10 +14,10 @@ export function useSelf() {
                 version: 2,
                 appName: 'Bitcoin UBI Kit',
                 scope: 'ibt.ubikit',
-                endpoint: PASSPORT_BOUND_NFT_ADDRESS,
+                endpoint: PASSPORT_BOUND_NFT_ADDRESS.toLowerCase(),
                 logoBase64: 'https://i.postimg.cc/mrmVf9hm/self.png',
                 userId: address,
-                endpointType: 'staging_celo',
+                endpointType: 'celo',
                 userIdType: 'hex',
                 disclosures: {
                     minimumAge: 21,

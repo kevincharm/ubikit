@@ -19,7 +19,7 @@ async function main() {
         ? '0xe57F4773bd9c9d8b6Cd70431117d353298B9f5BF'
         : '0x16ECBA51e18a4a7e61fdC417f0d47AFEeDfbed74'
     const scopeSeed = 'ibt.ubikit'
-    const issuingState = 'PSE'
+    const issuingState = 'ESP'
     const verificationConfig = {
         olderThan: 21n,
         forbiddenCountries: [] as string[],
