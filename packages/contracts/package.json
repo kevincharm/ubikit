@@ -2,6 +2,10 @@
   "name": "contracts",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "build": "hardhat compile",
+    "deploy:testnet": "hardhat ignition deploy ignition/modules/PassportBoundNFT.ts --network celoSepolia"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition": "^3.0.5",
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.1",

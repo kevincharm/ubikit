@@ -24,15 +24,17 @@ export default defineConfig({
       type: "edr-simulated",
       chainType: "l1",
     },
-    hardhatOp: {
-      type: "edr-simulated",
-      chainType: "op",
-    },
-    sepolia: {
+    celoSepolia: {
       type: "http",
-      chainType: "l1",
-      url: configVariable("SEPOLIA_RPC_URL"),
-      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+      chainType: "generic",
+      url: configVariable("CELO_SEPOLIA_URL"),
+      accounts: [configVariable("MAINNET_PK")],
     },
+    celo: {
+      type: "http",
+      chainType: "generic",
+      url: configVariable("CELO_URL"),
+      accounts: [configVariable("MAINNET_PK")],
+    }
   },
 });
