@@ -12,7 +12,7 @@ import { UBIDROP_ADDRESS, TOKEN_INFO, TOKEN_ADDRESSES } from '../lib/constants'
 import { getAddress, formatUnits } from 'viem'
 import { ubiDropAbi } from '../abis/ubiDropAbi'
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { celoSepolia } from 'viem/chains'
+import { celo } from 'viem/chains'
 
 export function Drop({ dropId }: { dropId: bigint }) {
     const { data: drop, refetch: refetchDrop } = useDrop(dropId)
@@ -156,10 +156,10 @@ export function Drops() {
     // Use account chainId if available (actual connected chain), otherwise fall back to useChainId
     // Only consider network correct if connected AND on the right chain
     const currentChainId = accountChainId || chainId
-    const isOnCorrectNetwork = isConnected && currentChainId === celoSepolia.id
+    const isOnCorrectNetwork = isConnected && currentChainId === celo.id
 
     const handleSwitchNetwork = useCallback(() => {
-        switchChain({ chainId: celoSepolia.id })
+        switchChain({ chainId: celo.id })
     }, [switchChain])
 
     return (
@@ -171,8 +171,7 @@ export function Drops() {
                     <p>
                         You are connected to the wrong network (Chain ID:{' '}
                         {currentChainId || 'unknown'}). Please switch to{' '}
-                        <strong>{celoSepolia.name}</strong> (Chain ID: {celoSepolia.id}) to claim
-                        tokens.
+                        <strong>{celo.name}</strong> (Chain ID: {celo.id}) to claim tokens.
                     </p>
                     <button
                         type="button"
@@ -180,7 +179,7 @@ export function Drops() {
                         onClick={handleSwitchNetwork}
                         disabled={isSwitchingChain}
                     >
-                        {isSwitchingChain ? 'Switching...' : `Switch to ${celoSepolia.name}`}
+                        {isSwitchingChain ? 'Switching...' : `Switch to ${celo.name}`}
                     </button>
                 </div>
             )}
