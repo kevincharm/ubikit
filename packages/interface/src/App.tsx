@@ -4,11 +4,12 @@ import { celoSepolia } from 'viem/chains'
 import './App.css'
 import { usePassportBoundNft } from './hooks/usePassportBoundNft'
 import { useSelf } from './hooks/useSelf'
+import { Drops } from './components/Drops'
 
 function App() {
     const { isConnected } = useAccount()
     const chainId = useChainId()
-    const { hasMinted, isPending } = usePassportBoundNft()
+    const { hasMinted, isPending, passportData, tokenId } = usePassportBoundNft()
     const { data: selfApp, isPending: isSelfLoading, isFetching: isSelfFetching } = useSelf()
 
     const isConfiguredForCelo = chainId === celoSepolia.id
@@ -52,11 +53,17 @@ function App() {
                     : `chain id ${chainId}`}
             </div>
             <h2>Home</h2>
-            <p className="panel-description">
-                This route wires wagmi, TanStack Query, and Self QR tooling so you can handle
-                verification or claiming logic in one place.
-            </p>
             {actionArea}
+            {passportData && (
+                <div className="passport-data">
+                    <h3>Passport Data</h3>
+                    <p>User ID: {passportData[0]}</p>
+                    <p>Older Than: {passportData[1]}</p>
+                    <p>Issuing State: {passportData[2]}</p>
+                    <p>Expiry Date: {passportData[3]}</p>
+                </div>
+            )}
+            <Drops />
         </section>
     )
 }
