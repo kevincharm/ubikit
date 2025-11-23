@@ -11,7 +11,7 @@ import {
     useSwitchChain,
 } from 'wagmi'
 import { getAddress, parseUnits, formatUnits } from 'viem'
-import { celoSepolia } from 'viem/chains'
+import { celo } from 'viem/chains'
 import { ubiDropAbi } from '../abis/ubiDropAbi'
 import { erc20Abi } from '../abis/erc20Abi'
 
@@ -32,7 +32,7 @@ export function Admin() {
     // Use account chainId if available (actual connected chain), otherwise fall back to useChainId
     // Only consider network correct if connected AND on the right chain
     const currentChainId = accountChainId || chainId
-    const isOnCorrectNetwork = isConnected && currentChainId === celoSepolia.id
+    const isOnCorrectNetwork = isConnected && currentChainId === celo.id
 
     const tokenInfo = useMemo(() => {
         const entry = Object.entries(TOKEN_INFO).find(
@@ -132,7 +132,7 @@ export function Admin() {
             abi: ubiDropAbi,
             address: getAddress(UBIDROP_ADDRESS),
             functionName: 'addDrop',
-            chainId: celoSepolia.id,
+            chainId: celo.id,
             args: [getAddress(tokenAddress), totalAmountInWei],
         })
     }, [writeContract, tokenAddress, totalAmountInWei, isOnCorrectNetwork])
@@ -144,7 +144,7 @@ export function Admin() {
             abi: erc20Abi,
             address: getAddress(tokenAddress),
             functionName: 'approve',
-            chainId: celoSepolia.id,
+            chainId: celo.id,
             args: [getAddress(UBIDROP_ADDRESS), totalAmountInWei],
         })
     }, [writeContract, tokenAddress, totalAmountInWei, address, isOnCorrectNetwork])
@@ -283,7 +283,7 @@ export function Admin() {
         !hasInsufficientBalance
 
     const handleSwitchNetwork = useCallback(() => {
-        switchChain({ chainId: celoSepolia.id })
+        switchChain({ chainId: celo.id })
     }, [switchChain])
 
     return (
@@ -295,8 +295,7 @@ export function Admin() {
                     <p>
                         You are connected to the wrong network (Chain ID:{' '}
                         {currentChainId || 'unknown'}). Please switch to{' '}
-                        <strong>{celoSepolia.name}</strong> (Chain ID: {celoSepolia.id}) to
-                        continue.
+                        <strong>{celo.name}</strong> (Chain ID: {celo.id}) to continue.
                     </p>
                     <button
                         type="button"
@@ -304,7 +303,7 @@ export function Admin() {
                         onClick={handleSwitchNetwork}
                         disabled={isSwitchingChain}
                     >
-                        {isSwitchingChain ? 'Switching...' : `Switch to ${celoSepolia.name}`}
+                        {isSwitchingChain ? 'Switching...' : `Switch to ${celo.name}`}
                     </button>
                 </div>
             )}
