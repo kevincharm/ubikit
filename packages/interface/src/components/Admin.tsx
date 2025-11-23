@@ -10,7 +10,7 @@ import {
     useChainId,
     useSwitchChain,
 } from 'wagmi'
-import { getAddress, parseUnits, formatUnits, decodeEventLog } from 'viem'
+import { getAddress, parseUnits, formatUnits } from 'viem'
 import { celoSepolia } from 'viem/chains'
 import { ubiDropAbi } from '../abis/ubiDropAbi'
 import { erc20Abi } from '../abis/erc20Abi'
@@ -18,7 +18,6 @@ import { erc20Abi } from '../abis/erc20Abi'
 export function Admin() {
     const [tokenAddress, setTokenAddress] = useState<string>(TOKEN_ADDRESSES.USDC)
     const [amountPerRecipient, setAmountPerRecipient] = useState(20)
-    const [createdDropId, setCreatedDropId] = useState<number | null>(null)
     const { totalSupply, isPending, error } = useUbiDropTotalSupply()
     const { address, isConnected, chainId: accountChainId } = useAccount()
     const chainId = useChainId()
@@ -129,7 +128,6 @@ export function Admin() {
     const handleAddDrop = useCallback(() => {
         if (!totalAmountInWei || !isOnCorrectNetwork) return
         setIsApproving(false)
-        setCreatedDropId(null) // Clear any previous drop ID
         writeContract({
             abi: ubiDropAbi,
             address: getAddress(UBIDROP_ADDRESS),
@@ -229,36 +227,6 @@ export function Admin() {
 
             refreshAllowanceWithRetry()
             refreshBalanceWithRetry()
-
-            // Extract drop ID from DropAdded event
-            if (receipt) {
-                try {
-                    // Find the DropAdded event in the logs
-                    const dropAddedLog = receipt.logs.find((log) => {
-                        try {
-                            const decoded = decodeEventLog({
-                                abi: ubiDropAbi,
-                                data: log.data,
-                                topics: log.topics,
-                            })
-                            return decoded.eventName === 'DropAdded'
-                        } catch {
-                            return false
-                        }
-                    })
-
-                    if (dropAddedLog) {
-                        const decoded = decodeEventLog({
-                            abi: ubiDropAbi,
-                            data: dropAddedLog.data,
-                            topics: dropAddedLog.topics,
-                        })
-                        setCreatedDropId(Number(decoded.args.dropId))
-                    }
-                } catch (error) {
-                    console.warn('Failed to parse DropAdded event:', error)
-                }
-            }
         }
     }, [
         isConfirmed,
@@ -449,20 +417,6 @@ export function Admin() {
             {isConfirmed && !isTxError && (
                 <div className="success-message">
                     Transaction confirmed! Drop created successfully.
-                    {createdDropId && (
-                        <div style={{ marginTop: '8px' }}>
-                            <a
-                                href={`/drops/${createdDropId}`}
-                                style={{
-                                    color: '#007bff',
-                                    textDecoration: 'none',
-                                    fontWeight: 'bold',
-                                }}
-                            >
-                                View Drop #{createdDropId} →
-                            </a>
-                        </div>
-                    )}
                 </div>
             )}
             <button
