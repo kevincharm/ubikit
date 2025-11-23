@@ -21,6 +21,9 @@ contract UBIDrop {
         uint256 amount;
     }
 
+    /// @notice PassportBoundNFT address
+    address public immutable passportBoundNft;
+
     /// @notice Drop data
     mapping(uint256 dropId => Drop drop) public drops;
     /// @notice Drop claimed data
@@ -28,8 +31,6 @@ contract UBIDrop {
         public isClaimed;
     /// @notice Total number of drops defined
     uint256 public totalDrops;
-    /// @notice PassportBoundNFT address
-    address passportBoundNft;
 
     event DropAdded(
         uint256 indexed dropId,
@@ -64,7 +65,8 @@ contract UBIDrop {
 
     /// @notice Create a UBI drop/campaign
     /// @param currency Address of ERC-20 that drop is denominated in
-    /// @param amount Total amount of currency to drop in this campaign
+    /// @param amount Total amount of currency to drop in this campaign (will
+    ///     be pulled from the caller's account)
     function addDrop(address currency, uint256 amount) external {
         (bytes32 root, uint256 n) = _getMerkleTree();
         uint256 dropId = ++totalDrops;
@@ -74,6 +76,7 @@ contract UBIDrop {
             currency: currency,
             amount: amount
         });
+        IERC20(currency).safeTransferFrom(msg.sender, address(this), amount);
         emit DropAdded(dropId, root, n, currency, amount);
     }
 
