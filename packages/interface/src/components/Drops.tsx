@@ -55,15 +55,36 @@ export function Drop({ dropId }: { dropId: bigint }) {
     }, [tokenId, dropId, writeContract])
 
     return (
-        <div>
-            <div>
-                Eligible for {formattedAmount} {tokenSymbol}
+        <div className="drop-card">
+            <div className="drop-header">
+                <div className="drop-id">Drop #{dropId.toString()}</div>
+                <div className={`eligibility-badge ${isEligible ? 'eligible' : 'not-eligible'}`}>
+                    {isEligible ? '✓ Eligible' : '✗ Not Eligible'}
+                </div>
             </div>
+
+            <div className="drop-content">
+                <div className="amount-section">
+                    <div className="amount-label">Claim Amount</div>
+                    <div className="amount-value">
+                        {formattedAmount} <span className="token-symbol">{tokenSymbol}</span>
+                    </div>
+                </div>
+
+                <div className="drop-stats">
+                    <div className="stat">
+                        <span className="stat-label">Total Recipients</span>
+                        <span className="stat-value">{drop?.totalSupply?.toString()}</span>
+                    </div>
+                </div>
+            </div>
+
             <button
+                className={`claim-drop-button ${isEligible ? 'eligible' : 'disabled'}`}
                 onClick={claim}
                 disabled={!isEligible || typeof tokenId !== 'bigint' || typeof dropId !== 'bigint'}
             >
-                Claim
+                {isEligible ? 'Claim' : 'Not Eligible'}
             </button>
         </div>
     )
@@ -77,11 +98,21 @@ export function Drops() {
     })
 
     return (
-        <div>
-            {typeof totalDrops === 'bigint' &&
-                Array.from({ length: Number(totalDrops!) }, (_, i: number) => (
-                    <Drop key={i} dropId={BigInt(i + 1)} />
-                ))}
+        <div className="drops-container">
+            <h3 className="drops-title">UBI Claims</h3>
+            <div className="drops-grid">
+                {typeof totalDrops === 'bigint' && totalDrops > 0n ? (
+                    Array.from({ length: Number(totalDrops!) }, (_, i: number) => (
+                        <Drop key={i} dropId={BigInt(i + 1)} />
+                    ))
+                ) : (
+                    <div className="no-drops-message">
+                        <div className="no-drops-icon">📦</div>
+                        <p>No UBI drops available yet</p>
+                        <p className="no-drops-subtitle">Check back later for new distributions</p>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }
