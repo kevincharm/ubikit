@@ -2,6 +2,7 @@ import { useReadContract, useConnection } from 'wagmi'
 import { passportBoundNftAbi } from '../abis/passportBoundNftAbi'
 import { getAddress, type Address } from 'viem'
 import { PASSPORT_BOUND_NFT_ADDRESS } from '../lib/constants'
+import { useMemo } from 'react'
 
 export function usePassportBoundNft() {
     const { address } = useConnection()
@@ -17,8 +18,12 @@ export function usePassportBoundNft() {
         },
     })
 
+    const hasMinted = useMemo(() => {
+        return typeof balance === 'bigint' ? balance > 0n : null
+    }, [balance])
+
     return {
-        hasMinted: typeof balance === 'bigint' ? balance > 0n : null,
+        hasMinted,
         ...rest,
     }
 }

@@ -1,15 +1,15 @@
 import { SelfQRcodeWrapper } from '@selfxyz/qrcode'
-import { useAccount, useChainId } from 'wagmi'
+import { useConnection, useChainId } from 'wagmi'
 import { celoSepolia } from 'viem/chains'
 import './App.css'
 import { usePassportBoundNft } from './hooks/usePassportBoundNft'
 import { useSelf } from './hooks/useSelf'
 
 function App() {
-    const { isConnected } = useAccount()
+    const { isConnected } = useConnection()
     const chainId = useChainId()
     const { hasMinted, isPending } = usePassportBoundNft()
-    const { data: selfApp, isPending: isSelfLoading, isFetching: isSelfFetching } = useSelf()
+    const selfApp = useSelf()
 
     const isConfiguredForCelo = chainId === celoSepolia.id
 
@@ -24,7 +24,7 @@ function App() {
                     Claim
                 </button>
             )
-        } else if (isSelfLoading || isSelfFetching || !selfApp) {
+        } else if (!selfApp) {
             actionArea = <p className="panel-message">Preparing your verification request…</p>
         } else {
             actionArea = (
