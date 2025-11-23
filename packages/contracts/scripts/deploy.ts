@@ -20,6 +20,18 @@ async function main() {
         forbiddenCountries: [] as string[],
         ofacEnabled: false,
     }
+    const layerZeroEndpoint = process.env.LZ_ENDPOINT as Address | undefined
+    if (!layerZeroEndpoint) {
+        throw new Error('LZ_ENDPOINT env var must be set to a LayerZero endpoint')
+    }
+    const passportChainEidRaw = process.env.PASSPORT_CHAIN_EID
+    if (!passportChainEidRaw) {
+        throw new Error('PASSPORT_CHAIN_EID env var must be provided')
+    }
+    const passportChainEid = Number(passportChainEidRaw)
+    if (!Number.isFinite(passportChainEid) || passportChainEid <= 0) {
+        throw new Error('PASSPORT_CHAIN_EID must be a positive integer')
+    }
 
     console.log('Deploying PassportBoundNFT...')
     const { passportBoundNft } = await ignition.deploy(PassportBoundNFT, {
@@ -29,6 +41,7 @@ async function main() {
                 scopeSeed,
                 verificationConfig,
                 issuingState,
+                layerZeroEndpoint,
             },
         },
     })
@@ -39,6 +52,8 @@ async function main() {
         parameters: {
             UBIDropModule: {
                 passportBoundNftAddress: passportBoundNft.address,
+                layerZeroEndpoint,
+                passportChainEid,
             },
         },
     })

@@ -18,11 +18,14 @@ export default buildModule('PassportBoundNFTModule', (m) => {
 
     const issuingState = m.getParameter('issuingState', 'PSE')
 
+    const layerZeroEndpoint = m.getParameter('layerZeroEndpoint')
+
     const passportBoundNft = m.contract('PassportBoundNFT', [
         identityVerificationHubV2Address,
         scopeSeed,
         verificationConfig,
         issuingState,
+        layerZeroEndpoint,
     ])
 
     return { passportBoundNft }
