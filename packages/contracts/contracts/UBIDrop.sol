@@ -11,10 +11,8 @@ contract UBIDrop {
     using SafeERC20 for IERC20;
 
     struct Drop {
-        /// @notice Merkle root of the NFTs
-        bytes32 merkleRoot;
         /// @notice Total supply of the NFTs
-        uint256 n;
+        uint256 totalSupply;
         /// @notice
         address currency;
         /// @notice Total amount of currency to be distributed in this drop
@@ -27,15 +25,14 @@ contract UBIDrop {
     /// @notice Drop data
     mapping(uint256 dropId => Drop drop) public drops;
     /// @notice Drop claimed data
-    mapping(uint256 dropId => mapping(bytes32 leaf => bool claimed))
+    mapping(uint256 dropId => mapping(uint256 tokenId => bool claimed))
         public isClaimed;
     /// @notice Total number of drops defined
     uint256 public totalDrops;
 
     event DropAdded(
         uint256 indexed dropId,
-        bytes32 indexed merkleRoot,
-        uint256 n,
+        uint256 totalSupply,
         address currency,
         uint256 amount
     );
@@ -49,18 +46,11 @@ contract UBIDrop {
     error DropNotFound();
     error AlreadyClaimed();
     error InvalidProof();
+    error NoSupply();
+    error TokenIdNotIncluded();
 
     constructor(address passportBoundNft_) {
         passportBoundNft = passportBoundNft_;
-    }
-
-    function _getMerkleTree()
-        internal
-        virtual
-        returns (bytes32 root, uint256 n)
-    {
-        root = PassportBoundNFT(passportBoundNft).merkleRoot();
-        n = PassportBoundNFT(passportBoundNft).totalSupply();
     }
 
     /// @notice Create a UBI drop/campaign
@@ -68,44 +58,33 @@ contract UBIDrop {
     /// @param amount Total amount of currency to drop in this campaign (will
     ///     be pulled from the caller's account)
     function addDrop(address currency, uint256 amount) external {
-        (bytes32 root, uint256 n) = _getMerkleTree();
         uint256 dropId = ++totalDrops;
+        uint256 totalSupply = PassportBoundNFT(passportBoundNft).totalSupply();
+        require(totalSupply != 0, NoSupply());
         drops[dropId] = Drop({
-            merkleRoot: root,
-            n: n,
+            totalSupply: totalSupply,
             currency: currency,
             amount: amount
         });
         IERC20(currency).safeTransferFrom(msg.sender, address(this), amount);
-        emit DropAdded(dropId, root, n, currency, amount);
+        emit DropAdded(dropId, totalSupply, currency, amount);
     }
 
     /// @notice Claim a UBI drop (for anyone)
-    /// @param recipient Address of the recipient
     /// @param tokenId Token ID of the NFT
     /// @param dropId Drop ID
-    /// @param proof Merkle proof of the claim
-    function claim(
-        address recipient,
-        uint256 tokenId,
-        uint256 dropId,
-        bytes32[] memory proof
-    ) external {
+    function claim(uint256 tokenId, uint256 dropId) external {
         Drop memory drop = drops[dropId];
-        require(drop.merkleRoot != bytes32(0), DropNotFound());
+        require(drop.totalSupply != 0, DropNotFound());
+        require(tokenId <= drop.totalSupply, TokenIdNotIncluded());
 
-        bytes32 leaf = keccak256(abi.encode(recipient, tokenId));
-        require(!isClaimed[dropId][leaf], AlreadyClaimed());
-        isClaimed[dropId][leaf] = true; // nullify leaf
+        require(!isClaimed[dropId][tokenId], AlreadyClaimed());
+        isClaimed[dropId][tokenId] = true; // nullify leaf
 
-        require(
-            MerkleProof.verify(proof, drop.merkleRoot, leaf),
-            InvalidProof()
-        );
-
+        address recipient = PassportBoundNFT(passportBoundNft).ownerOf(tokenId);
         // interactions: transfer currency to recipient
         // TODO: Potential dust leftover due to rounding
-        uint256 amt = drop.amount / drop.n;
+        uint256 amt = drop.amount / drop.totalSupply;
         IERC20(drop.currency).safeTransfer(recipient, amt);
         emit Claimed(recipient, tokenId, dropId, amt);
     }

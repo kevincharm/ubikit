@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "hardhat compile",
+    "test": "hardhat test --gas-stats",
     "deploy:testnet": "hardhat --network celoSepolia run scripts/deploy.ts"
   },
   "devDependencies": {

@@ -33,6 +33,11 @@ export const passportBoundNftAbi = [
                 name: '_verificationConfig',
                 type: 'tuple',
             },
+            {
+                internalType: 'string',
+                name: 'issuingState',
+                type: 'string',
+            },
         ],
         stateMutability: 'nonpayable',
         type: 'constructor',
@@ -168,6 +173,11 @@ export const passportBoundNftAbi = [
     },
     {
         inputs: [],
+        name: 'InvalidIssuingState',
+        type: 'error',
+    },
+    {
+        inputs: [],
         name: 'InvalidUserIdentifier',
         type: 'error',
     },
@@ -243,7 +253,7 @@ export const passportBoundNftAbi = [
             {
                 indexed: true,
                 internalType: 'uint256',
-                name: 'userId',
+                name: 'nullifier',
                 type: 'uint256',
             },
         ],
@@ -386,6 +396,19 @@ export const passportBoundNftAbi = [
     },
     {
         inputs: [],
+        name: 'issuingStateHash',
+        outputs: [
+            {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32',
+            },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [],
         name: 'name',
         outputs: [
             {
@@ -438,7 +461,7 @@ export const passportBoundNftAbi = [
         inputs: [
             {
                 internalType: 'uint256',
-                name: 'userId',
+                name: 'nullifier',
                 type: 'uint256',
             },
         ],
@@ -609,11 +632,11 @@ export const passportBoundNftAbi = [
                 type: 'uint256',
             },
         ],
-        name: 'tokenIdToUserId',
+        name: 'tokenIdToNullifier',
         outputs: [
             {
                 internalType: 'uint256',
-                name: 'userId',
+                name: 'nullifier',
                 type: 'uint256',
             },
         ],

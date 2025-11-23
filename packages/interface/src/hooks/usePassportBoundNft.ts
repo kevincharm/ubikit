@@ -13,7 +13,6 @@ export function usePassportBoundNft() {
         args: address ? [address as Address] : undefined,
         query: {
             enabled: Boolean(address),
-            refetchInterval: 1000,
         },
     })
 

@@ -1,40 +1,44 @@
-import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
-import { configVariable, defineConfig } from "hardhat/config";
+import hardhatToolboxViemPlugin from '@nomicfoundation/hardhat-toolbox-viem'
+import { configVariable, defineConfig } from 'hardhat/config'
 
 export default defineConfig({
-  plugins: [hardhatToolboxViemPlugin],
-  solidity: {
-    profiles: {
-      default: {
-        version: "0.8.28",
-      },
-      production: {
-        version: "0.8.28",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
+    plugins: [hardhatToolboxViemPlugin],
+    solidity: {
+        profiles: {
+            default: {
+                version: '0.8.28',
+            },
+            production: {
+                version: '0.8.28',
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 200,
+                    },
+                },
+            },
         },
-      },
     },
-  },
-  networks: {
-    hardhatMainnet: {
-      type: "edr-simulated",
-      chainType: "l1",
+    networks: {
+        default: {
+            type: 'edr-simulated',
+            chainType: 'l1',
+            forking: {
+                url: configVariable('CELO_SEPOLIA_URL'),
+                blockNumber: 10598800,
+            },
+        },
+        celoSepolia: {
+            type: 'http',
+            chainType: 'generic',
+            url: configVariable('CELO_SEPOLIA_URL'),
+            accounts: [configVariable('MAINNET_PK')],
+        },
+        celo: {
+            type: 'http',
+            chainType: 'generic',
+            url: configVariable('CELO_URL'),
+            accounts: [configVariable('MAINNET_PK')],
+        },
     },
-    celoSepolia: {
-      type: "http",
-      chainType: "generic",
-      url: configVariable("CELO_SEPOLIA_URL"),
-      accounts: [configVariable("MAINNET_PK")],
-    },
-    celo: {
-      type: "http",
-      chainType: "generic",
-      url: configVariable("CELO_URL"),
-      accounts: [configVariable("MAINNET_PK")],
-    }
-  },
-});
+})
