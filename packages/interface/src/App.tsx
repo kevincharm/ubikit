@@ -1,6 +1,6 @@
 import { SelfQRcodeWrapper } from '@selfxyz/qrcode'
 import { useAccount, useChainId } from 'wagmi'
-import { celoSepolia } from 'viem/chains'
+import { celo } from 'viem/chains'
 import './App.css'
 import { usePassportBoundNft } from './hooks/usePassportBoundNft'
 import { useSelf } from './hooks/useSelf'
@@ -14,7 +14,7 @@ function App() {
     const { hasMinted, isPending, passportData } = usePassportBoundNft()
     const { data: selfApp, isPending: isSelfLoading, isFetching: isSelfFetching } = useSelf()
 
-    const isConfiguredForCelo = chainId === celoSepolia.id
+    const isConfiguredForCelo = chainId === celo.id
 
     let actionArea = <p className="panel-message">Connect your wallet to get started.</p>
 
@@ -54,9 +54,7 @@ function App() {
         <section className="panel">
             <div className="network-pill" role="status">
                 Target network:{' '}
-                {isConfiguredForCelo
-                    ? `${celoSepolia.name} (chain id ${celoSepolia.id})`
-                    : `chain id ${chainId}`}
+                {isConfiguredForCelo ? `${celo.name} (chain id ${celo.id})` : `chain id ${chainId}`}
             </div>
             <h2>Home</h2>
             {actionArea}
