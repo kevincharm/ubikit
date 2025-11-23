@@ -9,7 +9,7 @@ import { Drops } from './components/Drops'
 function App() {
     const { isConnected } = useAccount()
     const chainId = useChainId()
-    const { hasMinted, isPending, passportData, tokenId } = usePassportBoundNft()
+    const { hasMinted, isPending, passportData } = usePassportBoundNft()
     const { data: selfApp, isPending: isSelfLoading, isFetching: isSelfFetching } = useSelf()
 
     const isConfiguredForCelo = chainId === celoSepolia.id

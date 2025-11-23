@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
+import { useConnect, useConnection, useDisconnect } from 'wagmi'
 
 export function ConnectWalletButton() {
-    const { address, isConnecting, isReconnecting, isConnected } = useAccount()
+    const { address, isConnecting, isReconnecting, isConnected } = useConnection()
     const { connectors, connectAsync, status } = useConnect()
     const { disconnectAsync } = useDisconnect()
 

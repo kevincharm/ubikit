@@ -2,6 +2,7 @@ import { createRootRouteWithContext, createRoute, createRouter } from '@tanstack
 import type { QueryClient } from '@tanstack/react-query'
 import App from './App'
 import { RootLayout } from './components/RootLayout'
+import { Admin } from './components/Admin'
 
 type RouterContext = {
     queryClient: QueryClient
@@ -17,7 +18,13 @@ const indexRoute = createRoute({
     component: App,
 })
 
-const routeTree = rootRoute.addChildren([indexRoute])
+const adminRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/admin',
+    component: Admin,
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, adminRoute])
 
 export const createAppRouter = (queryClient: QueryClient) =>
     createRouter({

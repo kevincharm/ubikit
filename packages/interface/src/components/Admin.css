@@ -1,0 +1,339 @@
+.admin-panel {
+    background: var(--color-surface);
+    border-radius: 20px;
+    border: 1px solid var(--color-border);
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(2, 6, 23, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.admin-panel h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.admin-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.admin-section h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.subsection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-border);
+}
+
+.subsection h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-muted);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 150ms ease;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: #475569;
+    opacity: 1;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.number-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.number-input {
+    flex: 1;
+    max-width: 150px;
+}
+
+.number-input-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.number-input-btn {
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    width: 24px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.7rem;
+    padding: 0;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.number-input-btn:hover {
+    background: var(--color-border);
+    border-color: var(--color-accent);
+}
+
+.number-input-btn:first-child {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: none;
+}
+
+.number-input-btn:last-child {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.recipients-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.recipients-input-wrapper .form-select {
+    min-width: 120px;
+}
+
+.age-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.age-input-wrapper .form-select {
+    min-width: 140px;
+}
+
+.add-parameter-btn {
+    background: transparent;
+    border: 1px dashed var(--color-border);
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 150ms ease, color 150ms ease;
+    align-self: flex-start;
+}
+
+.add-parameter-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.top-up-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    background: var(--color-surface-muted);
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+}
+
+.top-up-display label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-muted);
+}
+
+.top-up-amount {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.execute-button {
+    background: #000000;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 150ms ease, transform 150ms ease;
+    align-self: flex-start;
+}
+
+.execute-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.execute-button:active {
+    transform: translateY(0);
+}
+
+.eligible-addresses-value {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.loading-text {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+.error-text {
+    color: #ef4444;
+}
+
+.muted-text {
+    color: var(--color-muted);
+}
+
+.error-message {
+    padding: 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    color: #ef4444;
+    font-size: 0.9rem;
+}
+
+.success-message {
+    padding: 1rem;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 8px;
+    color: #22c55e;
+    font-size: 0.9rem;
+}
+
+.execute-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.approval-status {
+    margin-top: 1rem;
+    border-radius: 8px;
+}
+
+.approval-warning {
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.approval-warning p {
+    margin: 0;
+    color: #fbbf24;
+    font-size: 0.9rem;
+}
+
+.approval-details {
+    margin-top: 0.5rem !important;
+    font-size: 0.85rem !important;
+    color: var(--color-muted) !important;
+}
+
+.approval-success {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.approval-success p {
+    margin: 0;
+    color: #22c55e;
+    font-size: 0.9rem;
+}
+
+.network-warning {
+    padding: 1rem;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.network-warning p {
+    margin: 0 0 0.75rem 0;
+    color: #fbbf24;
+    font-size: 0.9rem;
+}
+
+.network-warning strong {
+    color: var(--color-text);
+}
+
+.switch-network-button {
+    background: #fbbf24;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 1.25rem;
+    color: #000000;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.switch-network-button:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.switch-network-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
