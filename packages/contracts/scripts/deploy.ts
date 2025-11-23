@@ -2,17 +2,22 @@ import { network } from 'hardhat'
 import PassportBoundNFT from '../ignition/modules/PassportBoundNFT.js'
 import UBIDrop from '../ignition/modules/UBIDrop.js'
 import { type Address } from 'viem'
+import { celo } from 'viem/chains'
 
 async function main() {
     const { viem, ignition } = await network.connect()
     const publicClient = await viem.getPublicClient()
     const [deployer] = await viem.getWalletClients()
 
+    const chainId = await publicClient.getChainId()
+    const isMainnet = chainId === celo.id
     console.log('Deployer:', deployer.account.address)
-    console.log('Network:', await publicClient.getChainId())
+    console.log('Network:', chainId)
 
     // Parameters (hardcoded)
-    const identityVerificationHubV2Address = '0x16ECBA51e18a4a7e61fdC417f0d47AFEeDfbed74' as Address
+    const identityVerificationHubV2Address: Address = isMainnet
+        ? '0xe57F4773bd9c9d8b6Cd70431117d353298B9f5BF'
+        : '0x16ECBA51e18a4a7e61fdC417f0d47AFEeDfbed74'
     const scopeSeed = 'ibt.ubikit'
     const issuingState = 'PSE'
     const verificationConfig = {

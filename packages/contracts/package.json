@@ -5,7 +5,8 @@
   "scripts": {
     "build": "hardhat compile",
     "test": "hardhat test --gas-stats",
-    "deploy:testnet": "hardhat --network celoSepolia run scripts/deploy.ts"
+    "deploy:testnet": "hardhat --network celoSepolia run scripts/deploy.ts",
+    "deploy:celo": "hardhat --network celo run scripts/deploy.ts"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition": "^3.0.5",

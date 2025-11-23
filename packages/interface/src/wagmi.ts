@@ -1,10 +1,11 @@
 import { createConfig, http } from 'wagmi'
 import { injected } from 'wagmi/connectors'
-import { celoSepolia } from 'viem/chains'
+import { celo, celoSepolia } from 'viem/chains'
 
 export const wagmiConfig = createConfig({
-    chains: [celoSepolia],
+    chains: [celo, celoSepolia],
     transports: {
+        [celo.id]: http(),
         [celoSepolia.id]: http(),
     },
     connectors: [injected({ shimDisconnect: true })],
