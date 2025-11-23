@@ -180,53 +180,75 @@ export function Admin() {
     // Refresh allowance and balance after any transaction finishes successfully
     useEffect(() => {
         if (isConfirmed && !isTxError) {
-            const refreshAllowanceWithRetry = async (retries = 3) => {
-                for (let i = 0; i < retries; i++) {
-                    try {
-                        const { data: newAllowance } = await refetchAllowance()
-                        if (newAllowance !== undefined) {
-                            // If this was an approval transaction, check if we should proceed with addDrop
-                            if (isApproving && newAllowance >= totalAmountInWei!) {
-                                setIsApproving(false)
-                                handleAddDrop()
+            // Add a small delay to ensure blockchain state is updated
+            const delayRefresh = async () => {
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+
+                const refreshAllowanceWithRetry = async (retries = 5) => {
+                    for (let i = 0; i < retries; i++) {
+                        try {
+                            console.log(`Refreshing allowance (attempt ${i + 1}/${retries})...`)
+                            const { data: newAllowance } = await refetchAllowance()
+                            if (newAllowance !== undefined) {
+                                console.log(
+                                    'Allowance refreshed successfully:',
+                                    formatTokenAmount(newAllowance),
+                                )
+                                // If this was an approval transaction, check if we should proceed with addDrop
+                                if (isApproving && newAllowance >= totalAmountInWei!) {
+                                    console.log('Approval confirmed, proceeding with addDrop...')
+                                    setIsApproving(false)
+                                    handleAddDrop()
+                                }
+                                break // Successfully refreshed
                             }
-                            break // Successfully refreshed
+                        } catch (error) {
+                            console.warn(`Allowance refetch attempt ${i + 1} failed:`, error)
+                            if (i === retries - 1) {
+                                console.error('Failed to refresh allowance after multiple attempts')
+                            }
                         }
-                    } catch (error) {
-                        console.warn(`Allowance refetch attempt ${i + 1} failed:`, error)
-                        if (i === retries - 1) {
-                            console.error('Failed to refresh allowance after multiple attempts')
+                        // Wait before retrying (exponential backoff)
+                        if (i < retries - 1) {
+                            await new Promise((resolve) =>
+                                setTimeout(resolve, Math.pow(2, i) * 1000),
+                            )
                         }
-                    }
-                    // Wait before retrying (exponential backoff)
-                    if (i < retries - 1) {
-                        await new Promise((resolve) => setTimeout(resolve, Math.pow(2, i) * 500))
                     }
                 }
-            }
 
-            const refreshBalanceWithRetry = async (retries = 3) => {
-                for (let i = 0; i < retries; i++) {
-                    try {
-                        const { data: newBalance } = await refetchBalance()
-                        if (newBalance !== undefined) {
-                            break // Successfully refreshed
+                const refreshBalanceWithRetry = async (retries = 5) => {
+                    for (let i = 0; i < retries; i++) {
+                        try {
+                            console.log(`Refreshing balance (attempt ${i + 1}/${retries})...`)
+                            const { data: newBalance } = await refetchBalance()
+                            if (newBalance !== undefined) {
+                                console.log(
+                                    'Balance refreshed successfully:',
+                                    formatTokenAmount(newBalance),
+                                )
+                                break // Successfully refreshed
+                            }
+                        } catch (error) {
+                            console.warn(`Balance refetch attempt ${i + 1} failed:`, error)
+                            if (i === retries - 1) {
+                                console.error('Failed to refresh balance after multiple attempts')
+                            }
                         }
-                    } catch (error) {
-                        console.warn(`Balance refetch attempt ${i + 1} failed:`, error)
-                        if (i === retries - 1) {
-                            console.error('Failed to refresh balance after multiple attempts')
+                        // Wait before retrying (exponential backoff)
+                        if (i < retries - 1) {
+                            await new Promise((resolve) =>
+                                setTimeout(resolve, Math.pow(2, i) * 1000),
+                            )
                         }
-                    }
-                    // Wait before retrying (exponential backoff)
-                    if (i < retries - 1) {
-                        await new Promise((resolve) => setTimeout(resolve, Math.pow(2, i) * 500))
                     }
                 }
+
+                // Refresh both allowance and balance concurrently
+                await Promise.all([refreshAllowanceWithRetry(), refreshBalanceWithRetry()])
             }
 
-            refreshAllowanceWithRetry()
-            refreshBalanceWithRetry()
+            delayRefresh()
         }
     }, [
         isConfirmed,
@@ -237,6 +259,7 @@ export function Admin() {
         refetchAllowance,
         refetchBalance,
         receipt,
+        formatTokenAmount,
     ])
 
     const handleExecute = useCallback(() => {

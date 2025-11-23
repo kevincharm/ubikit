@@ -59,6 +59,48 @@
   justify-content: center;
 }
 
+/* Network warning for drops */
+.network-warning {
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.network-warning p {
+  margin: 0 0 0.75rem 0;
+  color: #ef4444;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.network-warning strong {
+  font-weight: 600;
+}
+
+.switch-network-button {
+  background: #fbbf24;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 1.25rem;
+  color: #000000;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.switch-network-button:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.switch-network-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Drops styling */
 .drops-container {
   display: flex;
@@ -229,6 +271,28 @@
   color: var(--color-muted);
   cursor: not-allowed;
   border: 1px solid var(--color-border);
+}
+
+.claim-drop-button.claiming {
+  background: #f59e0b;
+  cursor: not-allowed;
+}
+
+.claim-drop-button.claiming:hover:not(:disabled) {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.claim-success-message {
+  padding: 0.75rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 8px;
+  color: #22c55e;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 0.75rem;
 }
 
 .no-drops-message {

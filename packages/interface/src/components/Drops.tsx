@@ -1,14 +1,25 @@
-import { useReadContract, useWriteContract } from 'wagmi'
+import {
+    useReadContract,
+    useWriteContract,
+    useAccount,
+    useChainId,
+    useSwitchChain,
+    useWaitForTransactionReceipt,
+} from 'wagmi'
 import { useDrop } from '../hooks/useDrop'
 import { usePassportBoundNft } from '../hooks/usePassportBoundNft'
 import { UBIDROP_ADDRESS, TOKEN_INFO, TOKEN_ADDRESSES } from '../lib/constants'
 import { getAddress, formatUnits } from 'viem'
 import { ubiDropAbi } from '../abis/ubiDropAbi'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState, useEffect } from 'react'
+import { celoSepolia } from 'viem/chains'
 
 export function Drop({ dropId }: { dropId: bigint }) {
-    const { data: drop } = useDrop(dropId)
+    const { data: drop, refetch: refetchDrop } = useDrop(dropId)
     const { tokenId } = usePassportBoundNft()
+    const [claimSuccess, setClaimSuccess] = useState(false)
+    const [isClaiming, setIsClaiming] = useState(false)
+
     const isEligible =
         typeof tokenId === 'bigint' &&
         typeof dropId === 'bigint' &&
@@ -43,9 +54,12 @@ export function Drop({ dropId }: { dropId: bigint }) {
         return formatUnits(amountPerRecipient, tokenDecimals)
     }, [drop, tokenDecimals])
 
-    const { writeContract } = useWriteContract()
+    const { writeContract, data: claimHash } = useWriteContract()
+
     const claim = useCallback(() => {
         if (!tokenId || !dropId) return
+        setIsClaiming(true)
+        setClaimSuccess(false)
         writeContract({
             abi: ubiDropAbi,
             address: getAddress(UBIDROP_ADDRESS),
@@ -53,6 +67,25 @@ export function Drop({ dropId }: { dropId: bigint }) {
             args: [tokenId as bigint, dropId as bigint],
         })
     }, [tokenId, dropId, writeContract])
+
+    // Monitor claim transaction
+    const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+        hash: claimHash,
+    })
+
+    // Handle successful claim
+    useEffect(() => {
+        if (isConfirmed && isClaiming) {
+            console.log('Claim transaction confirmed successfully!')
+            setClaimSuccess(true)
+            setIsClaiming(false)
+
+            // Refresh drop data after a short delay to ensure state is updated
+            setTimeout(() => {
+                refetchDrop()
+            }, 2000)
+        }
+    }, [isConfirmed, isClaiming, refetchDrop])
 
     return (
         <div className="drop-card">
@@ -79,12 +112,31 @@ export function Drop({ dropId }: { dropId: bigint }) {
                 </div>
             </div>
 
+            {claimSuccess && (
+                <div className="claim-success-message">
+                    🎉 Successfully claimed {formattedAmount} {tokenSymbol}!
+                </div>
+            )}
+
             <button
-                className={`claim-drop-button ${isEligible ? 'eligible' : 'disabled'}`}
+                className={`claim-drop-button ${isEligible ? 'eligible' : 'disabled'} ${isClaiming || isConfirming ? 'claiming' : ''}`}
                 onClick={claim}
-                disabled={!isEligible || typeof tokenId !== 'bigint' || typeof dropId !== 'bigint'}
+                disabled={
+                    !isEligible ||
+                    typeof tokenId !== 'bigint' ||
+                    typeof dropId !== 'bigint' ||
+                    isClaiming ||
+                    isConfirming ||
+                    claimSuccess
+                }
             >
-                {isEligible ? 'Claim' : 'Not Eligible'}
+                {isClaiming || isConfirming
+                    ? '⏳ Claiming...'
+                    : claimSuccess
+                      ? '✅ Claimed'
+                      : isEligible
+                        ? 'Claim'
+                        : 'Not Eligible'}
             </button>
         </div>
     )
@@ -97,9 +149,48 @@ export function Drops() {
         functionName: 'totalDrops',
     })
 
+    const { isConnected, chainId: accountChainId } = useAccount()
+    const chainId = useChainId()
+    const { switchChain, isPending: isSwitchingChain } = useSwitchChain()
+
+    // Use account chainId if available (actual connected chain), otherwise fall back to useChainId
+    // Only consider network correct if connected AND on the right chain
+    const currentChainId = accountChainId || chainId
+    const isOnCorrectNetwork = isConnected && currentChainId === celoSepolia.id
+
+    const handleSwitchNetwork = useCallback(() => {
+        switchChain({ chainId: celoSepolia.id })
+    }, [switchChain])
+
     return (
         <div className="drops-container">
             <h3 className="drops-title">UBI Claims</h3>
+
+            {isConnected && !isOnCorrectNetwork && (
+                <div className="network-warning">
+                    <p>
+                        You are connected to the wrong network (Chain ID:{' '}
+                        {currentChainId || 'unknown'}). Please switch to{' '}
+                        <strong>{celoSepolia.name}</strong> (Chain ID: {celoSepolia.id}) to claim
+                        tokens.
+                    </p>
+                    <button
+                        type="button"
+                        className="switch-network-button"
+                        onClick={handleSwitchNetwork}
+                        disabled={isSwitchingChain}
+                    >
+                        {isSwitchingChain ? 'Switching...' : `Switch to ${celoSepolia.name}`}
+                    </button>
+                </div>
+            )}
+
+            {!isConnected && (
+                <div className="network-warning">
+                    <p>Please connect your wallet to claim tokens.</p>
+                </div>
+            )}
+
             <div className="drops-grid">
                 {typeof totalDrops === 'bigint' && totalDrops > 0n ? (
                     Array.from({ length: Number(totalDrops!) }, (_, i: number) => (
